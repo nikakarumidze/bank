@@ -1,16 +1,12 @@
 class User:
-    def __init__(self,username,password,balance):
+    def __init__(self,username,password,balance,transactions):
         self.username = username
         self.password = password
         self.balance = balance
-
-    def get_balance(self):
-        pass
+        self.transactions = transactions
     
     def transfer_money(self, receiver_username, amount):
         pass
 
-    def get_transactions(self):
-        pass
 
     
