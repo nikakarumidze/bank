@@ -1,12 +1,12 @@
 import sqlite3
 
-class Database:
-    def __init__(self, db_name):
-        self.conn = sqlite3.connect(db_name)
+class DBConnection:
+    def __init__(self):
+        self.conn = sqlite3.connect('Bank_database.db')
         self.cursor = self.conn.cursor()
 
     def create_tables(self):
-        with open('../init.sql', 'r') as file:
+        with open(r'C:\Users\nikak\bank\backend\init.sql', 'r') as file:
             sql_statements = file.read()
             self.cursor.executescript(sql_statements)
         self.conn.commit()

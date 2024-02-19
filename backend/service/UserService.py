@@ -1,8 +1,8 @@
 from repository.UserRepository import UserRepository
 
 class UserService:
-    def __init__(self, db_name):
-        self.repo = UserRepository(db_name)
+    def __init__(self, ):
+        self.repo = UserRepository()
 
     def register_user(self, username, password):
         self.repo.register_user(username, password)
