@@ -5,7 +5,7 @@ class UserService:
         self.repo = UserRepository()
 
     def register_user(self, username, password):
-        self.repo.register_user(username, password)
+        return self.repo.register_user(username, password)
 
     def authenticate_user(self, username, password):
         return self.repo.authenticate_user(username, password)

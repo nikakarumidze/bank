@@ -14,7 +14,7 @@ def register_user():
         data = request.json
         result = user_service.register_user(data['username'], data['password'])
         if result:
-            return jsonify({"message": "User registered successfully"}), 200
+            return result, 200
         else:
             return jsonify({"error": "Failed to register user"}), 400
 
