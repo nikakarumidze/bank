@@ -4,7 +4,7 @@ from repository.DBConnection import DB_connection
 class UserRepository:
     def __init__(self):
         self.db = DB_connection()
-        self.db.create_tables()  # Only running once to create tables in db
+        # self.db.create_tables()  # Only running once to create tables in db
 
     def user_exists(self, username):
         try:
@@ -35,15 +35,12 @@ class UserRepository:
             return f"Error occurred while registering user: {e}", 400
 
     def authenticate_user(self, username, password):
-        try:
 
-            user = self.db.cursor.execute(
-                "SELECT * FROM users WHERE username = ? AND password_hash = ?",
-                (username, password),
-            ).fetchone()
-            return user is not None
-        except Exception as e:
-            return f"Error occurred while authenticating user: {e}"
+        user = self.db.cursor.execute(
+            "SELECT * FROM users WHERE username = ? AND password_hash = ?",
+            (username, password),
+        ).fetchone()
+        return user is not None
 
     def get_user_balance(self, username):
         try:

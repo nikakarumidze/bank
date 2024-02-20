@@ -11,7 +11,9 @@ class DB_connection:
             with cls._lock:
                 if cls._instance is None:
                     cls._instance = super().__new__(cls)
-                    cls._instance.conn = sqlite3.connect("Bank_database.db")
+                    cls._instance.conn = sqlite3.connect(
+                        "Bank_database.db", check_same_thread=False
+                    )
                     cls._instance.cursor = cls._instance.conn.cursor()
         return cls._instance
 

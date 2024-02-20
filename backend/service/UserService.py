@@ -17,7 +17,7 @@ class UserService:
         return re.match(regex, email) is not None
 
     def __is_email_used(self, email):
-        return not bool(self.repo.is_email_used(email))
+        return self.repo.is_email_used(email) is not None
 
     def register_user(self, username, password, email):
         if len(username) < 4:
@@ -28,7 +28,7 @@ class UserService:
             }, 400
         if not bool(re.search(r"\d", password)):
             return {"error": "Password must contain at least one digit"}, 400
-        if not self.__user_exists(username):
+        if self.__user_exists(username) is not None:
             return {"error": "User Exists"}, 400
         if not self.__is_valid_email(email):
             return {"error": "Please type correct email"}, 400

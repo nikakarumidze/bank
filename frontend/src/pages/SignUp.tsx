@@ -13,7 +13,6 @@ import { Link as RouterLink } from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton";
 import validator from "validator";
 import axios from "axios";
-import UserData from "../components/UserData";
 
 interface formStateObject {
   isUsernameValid: boolean;
@@ -30,7 +29,6 @@ export default function SignUp() {
   const [formState, setFormState] = useState<formStateObject>(baseFormValidity);
   const [reqErr, setReqErr] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [userData, setUserData] = useState<string[]>([]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -65,7 +63,6 @@ export default function SignUp() {
     try {
       const answer = await axios.post("http://localhost:5000/signup", data);
       console.log(answer.data);
-      setUserData(answer.data);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setReqErr(true);
@@ -81,119 +78,111 @@ export default function SignUp() {
   };
 
   return (
-    <>
-      {!userData.length ? (
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+          Sign Up
+        </Typography>
+        {loading && (
+          <LoadingButton
+            loading
+            size="large"
+            variant="outlined"
+            sx={{ p: 2 }}
+          />
+        )}
+        {reqErr && (
           <Box
             sx={{
-              marginTop: 8,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+              border: "1px solid",
+              borderColor: "error.light",
+              mx: 3,
+              mt: 2,
+              p: 1,
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
-              Sign Up
+            <Typography sx={{ color: "error.dark" }} variant="body2">
+              Invalid login or password. Remember that login names and passwords
+              are case-sensitive. Please try again.
             </Typography>
-            {loading && (
-              <LoadingButton
-                loading
-                size="large"
-                variant="outlined"
-                sx={{ p: 2 }}
-              />
-            )}
-            {reqErr && (
-              <Box
-                sx={{
-                  border: "1px solid",
-                  borderColor: "error.light",
-                  mx: 3,
-                  mt: 2,
-                  p: 1,
-                }}
-              >
-                <Typography sx={{ color: "error.dark" }} variant="body2">
-                  Invalid login or password. Remember that login names and
-                  passwords are case-sensitive. Please try again.
-                </Typography>
-              </Box>
-            )}
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              noValidate
-              sx={{ mt: 1 }}
-            >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                name="username"
-                autoComplete="username"
-                autoFocus
-                error={!formState.isUsernameValid}
-                helperText={
-                  !formState.isUsernameValid
-                    ? "You need to have a valid username."
-                    : ""
-                }
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                error={!formState.isPasswordValid}
-                helperText={
-                  !formState.isPasswordValid
-                    ? "Your password must contain at least 8 characters and minimum 1 Number"
-                    : ""
-                }
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="email"
-                label="Email"
-                type="Email"
-                id="email"
-                autoComplete="current-email"
-                error={!formState.isEmailValid}
-                helperText={
-                  !formState.isEmailValid ? "Please type correct Email" : ""
-                }
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Register
-              </Button>
-              <Grid container justifyContent="center" alignItems="center">
-                <Link component={RouterLink} to="/">
-                  {"Already have an account? Log In"}
-                </Link>
-              </Grid>
-            </Box>
           </Box>
-        </Container>
-      ) : (
-        <UserData data={userData} />
-      )}
-    </>
+        )}
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
+            autoFocus
+            error={!formState.isUsernameValid}
+            helperText={
+              !formState.isUsernameValid
+                ? "You need to have a valid username."
+                : ""
+            }
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            error={!formState.isPasswordValid}
+            helperText={
+              !formState.isPasswordValid
+                ? "Your password must contain at least 8 characters and minimum 1 Number"
+                : ""
+            }
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="email"
+            label="Email"
+            type="Email"
+            id="email"
+            autoComplete="current-email"
+            error={!formState.isEmailValid}
+            helperText={
+              !formState.isEmailValid ? "Please type correct Email" : ""
+            }
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Register
+          </Button>
+          <Grid container justifyContent="center" alignItems="center">
+            <Link component={RouterLink} to="/">
+              {"Already have an account? Log In"}
+            </Link>
+          </Grid>
+        </Box>
+      </Box>
+      <Typography mt={2} align="center" variant="h4" color="red">
+        Register and get 5000$
+      </Typography>
+    </Container>
   );
 }
