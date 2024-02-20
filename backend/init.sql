@@ -2,6 +2,7 @@
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
     username TEXT,
+    email TEXT,
     password_hash TEXT,
     balance REAL
 );
