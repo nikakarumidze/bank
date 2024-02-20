@@ -3,13 +3,10 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Link as RouterLink } from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton";
 import validator from "validator";
 import axios from "axios";
@@ -40,7 +37,7 @@ export default function Transactions() {
     const data = {
       username: formData.get("sender") as string,
       password: formData.get("sender_password"),
-      receiver: formData.get("receuver") as string,
+      receiver: formData.get("receiver") as string,
       amount: formData.get("amount") as string,
     } as const;
     const isUsernameValid = data.username.length > 3;
