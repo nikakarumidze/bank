@@ -1,11 +1,26 @@
 from flask import Flask, request, jsonify, abort
 from service.UserService import UserService
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 user_service = UserService()
 
 
-@app.route("/", methods=["POST"])
+@app.route("/login", methods=["OPTIONS"])
+def handle_preflight():
+    return (
+        "",
+        200,
+        {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST",
+            "Access-Control-Allow-Headers": "Content-Type",
+        },
+    )
+
+
+@app.route("/login", methods=["POST"])
 def get_user_info():
     if request.method == "POST":
         data = request.json
