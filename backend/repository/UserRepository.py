@@ -4,7 +4,7 @@ from repository.DBConnection import DB_connection
 class UserRepository:
     def __init__(self):
         self.db = DB_connection()
-        # self.db.create_tables()  # Only running once to create tables in db
+        self.db.create_tables()  # Only running once to create tables in db
 
     def user_exists(self, username):
         try:
@@ -23,11 +23,11 @@ class UserRepository:
         except Exception:
             return "Error occured"
 
-    def register_user(self, username, password_hash):
+    def register_user(self, username, email, password_hash):
         try:
             self.db.cursor.execute(
-                "INSERT INTO users (username, password_hash, balance) VALUES (?, ?, 5000)",
-                (username, password_hash),
+                "INSERT INTO users (username, email, password_hash, balance) VALUES (?, ?, ?, 5000)",
+                (username, email, password_hash),
             )
             self.db.conn.commit()
             return "User registered successfully", 200

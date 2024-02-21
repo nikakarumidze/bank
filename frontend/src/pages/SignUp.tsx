@@ -11,6 +11,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Link as RouterLink } from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton";
+import Alert from "@mui/material/Alert";
+import IconButton from "@mui/material/IconButton";
+import Collapse from "@mui/material/Collapse";
 import validator from "validator";
 import axios from "axios";
 
@@ -27,8 +30,10 @@ const baseFormValidity: formStateObject = {
 
 export default function SignUp() {
   const [formState, setFormState] = useState<formStateObject>(baseFormValidity);
-  const [reqErr, setReqErr] = useState<boolean>(false);
+  const [reqErr, setReqErr] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [reqSuccess, setReqSuccess] = useState<boolean>(false);
+  console.log(reqErr);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,22 +60,25 @@ export default function SignUp() {
       isPasswordValid: isPasswordValid,
       isEmailValid: isEmailValid,
     });
+    setReqSuccess(false);
     if (!isUsernameValid || !isPasswordValid || !isEmailValid) return;
 
-    setReqErr(false);
+    setReqErr("");
     setLoading(true);
 
     try {
       const answer = await axios.post("http://localhost:5000/signup", data);
+      setReqSuccess(true);
       console.log(answer.data);
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setReqErr(true);
+        setReqErr(err.response!.data.description!.error);
         setFormState({
           isUsernameValid: false,
           isPasswordValid: false,
           isEmailValid: false,
         });
+        console.log(err.response!.data);
       }
     } finally {
       setLoading(false);
@@ -102,21 +110,15 @@ export default function SignUp() {
             sx={{ p: 2 }}
           />
         )}
-        {reqErr && (
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: "error.light",
-              mx: 3,
-              mt: 2,
-              p: 1,
-            }}
-          >
-            <Typography sx={{ color: "error.dark" }} variant="body2">
-              Invalid login or password. Remember that login names and passwords
-              are case-sensitive. Please try again.
-            </Typography>
-          </Box>
+        {Boolean(reqErr) && (
+          <Alert variant="filled" severity="error" sx={{ mb: 2 }}>
+            {reqErr}
+          </Alert>
+        )}
+        {reqSuccess && (
+          <Alert variant="filled" severity="success" sx={{ mb: 2 }}>
+            User Registered successfully
+          </Alert>
         )}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField

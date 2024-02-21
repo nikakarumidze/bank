@@ -21,11 +21,9 @@ class UserService:
 
     def register_user(self, username, password, email):
         if len(username) < 4:
-            return {"error": "Not sufficient characters for user"}, 400
+            return "Not sufficient characters for user", 400
         if 8 > len(password) < 26:
-            return {
-                "error": "The length of password should be between 8 and 26 characters"
-            }, 400
+            return "The length of password should be between 8 and 26 characters", 400
         if not bool(re.search(r"\d", password)):
             return {"error": "Password must contain at least one digit"}, 400
         if self.__user_exists(username) is not None:
@@ -36,7 +34,7 @@ class UserService:
             return {"error": "The email already exists"}, 400
 
         password_hash = hashlib.sha256(password.encode()).hexdigest()
-        return self.repo.register_user(username, password_hash)
+        return self.repo.register_user(username, email, password_hash)
 
     def __authenticate_user(self, username, password):
         password_hash = hashlib.sha256(password.encode()).hexdigest()
@@ -54,7 +52,7 @@ class UserService:
             balance = self.__get_user_balance(username)
             transactions = self.__get_user_transactions(username)
             return [balance, transactions], 200
-        return {"error": "Incorrect Password"}, 400
+        return {"error": "Incorrect Username or Password"}, 400
 
     def make_transaction(self, username, password, receiver, amount):
         access = self.__authenticate_user(username, password)
