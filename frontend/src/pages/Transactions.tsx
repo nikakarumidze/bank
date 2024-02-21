@@ -8,17 +8,18 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import LoadingButton from "@mui/lab/LoadingButton";
+import Alert from "@mui/material/Alert";
 import validator from "validator";
 import axios from "axios";
 
 interface formStateObject {
-  isUsernameValid: boolean;
+  isSenderValid: boolean;
   isPasswordValid: boolean;
   isReceiverValid: boolean;
   isAmountValid: boolean;
 }
 const baseFormValidity: formStateObject = {
-  isUsernameValid: true,
+  isSenderValid: true,
   isPasswordValid: true,
   isReceiverValid: true,
   isAmountValid: true,
@@ -28,6 +29,7 @@ export default function Transactions() {
   const [formState, setFormState] = useState<formStateObject>(baseFormValidity);
   const [reqErr, setReqErr] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [reqSuccess, setReqSuccess] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,7 +40,7 @@ export default function Transactions() {
       receiver: formData.get("receiver") as string,
       amount: formData.get("amount") as string,
     } as const;
-    const isUsernameValid = data.username.length > 3;
+    const isSenderValid = data.username.length > 3;
     const isPasswordValid = validator.isStrongPassword(
       data.password as string,
       {
@@ -52,13 +54,14 @@ export default function Transactions() {
     const isAmountValid = Number(data.amount) > 0;
 
     setFormState({
-      isUsernameValid: isUsernameValid,
+      isSenderValid: isSenderValid,
       isPasswordValid: isPasswordValid,
       isReceiverValid: isReceiverValid,
       isAmountValid: isAmountValid,
     });
+    setReqSuccess(false);
     if (
-      !isUsernameValid ||
+      !isSenderValid ||
       !isPasswordValid ||
       !isReceiverValid ||
       !isAmountValid
@@ -73,12 +76,13 @@ export default function Transactions() {
         "http://localhost:5000/transactions",
         data
       );
+      setReqSuccess(true);
       console.log(answer.data);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setReqErr(true);
         setFormState({
-          isUsernameValid: false,
+          isSenderValid: false,
           isPasswordValid: false,
           isReceiverValid: false,
           isAmountValid: false,
@@ -114,21 +118,15 @@ export default function Transactions() {
             sx={{ p: 2 }}
           />
         )}
-        {reqErr && (
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: "error.light",
-              mx: 3,
-              mt: 2,
-              p: 1,
-            }}
-          >
-            <Typography sx={{ color: "error.dark" }} variant="body2">
-              Invalid login or password. Remember that login names and passwords
-              are case-sensitive. Please try again.
-            </Typography>
-          </Box>
+        {Boolean(reqErr) && (
+          <Alert variant="filled" severity="error" sx={{ mb: 2 }}>
+            {reqErr}
+          </Alert>
+        )}
+        {reqSuccess && (
+          <Alert variant="filled" severity="success" sx={{ mb: 2 }}>
+            Transaction is successfull
+          </Alert>
         )}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
@@ -136,13 +134,13 @@ export default function Transactions() {
             required
             fullWidth
             id="sender"
-            label="Username"
-            name="username"
-            autoComplete="username"
+            label="sender"
+            name="sender"
+            autoComplete="sender"
             autoFocus
-            error={!formState.isUsernameValid}
+            error={!formState.isSenderValid}
             helperText={
-              !formState.isUsernameValid
+              !formState.isSenderValid
                 ? "You need to have a valid username."
                 : ""
             }
@@ -151,7 +149,7 @@ export default function Transactions() {
             margin="normal"
             required
             fullWidth
-            name="password"
+            name="sender_password"
             label="Password"
             type="password"
             id="sender_password"

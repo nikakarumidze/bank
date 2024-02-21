@@ -14,6 +14,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import validator from "validator";
 import axios from "axios";
 import UserData from "../components/UserData";
+import Alert from "@mui/material/Alert";
+import { UserDataType } from "../Interfaces";
 
 interface formStateObject {
   isUsernameValid: boolean;
@@ -26,9 +28,9 @@ const baseFormValidity: formStateObject = {
 
 export default function LogIn() {
   const [formState, setFormState] = useState<formStateObject>(baseFormValidity);
-  const [reqErr, setReqErr] = useState<boolean>(false);
+  const [reqErr, setReqErr] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [userData, setUserData] = useState<string[]>([]);
+  const [userData, setUserData] = useState<UserDataType | []>([]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,7 +56,7 @@ export default function LogIn() {
     });
     if (!isUsernameValid || !isPasswordValid) return;
 
-    setReqErr(false);
+    setReqErr("");
     setLoading(true);
 
     try {
@@ -63,7 +65,7 @@ export default function LogIn() {
       setUserData(answer.data);
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setReqErr(true);
+        setReqErr(err.response!.data.description!.error);
         setFormState({
           isUsernameValid: false,
           isPasswordValid: false,
@@ -102,20 +104,9 @@ export default function LogIn() {
               />
             )}
             {reqErr && (
-              <Box
-                sx={{
-                  border: "1px solid",
-                  borderColor: "error.light",
-                  mx: 3,
-                  mt: 2,
-                  p: 1,
-                }}
-              >
-                <Typography sx={{ color: "error.dark" }} variant="body2">
-                  Invalid login or password. Remember that login names and
-                  passwords are case-sensitive. Please try again.
-                </Typography>
-              </Box>
+              <Alert variant="filled" severity="error" sx={{ mb: 2 }}>
+                {reqErr}
+              </Alert>
             )}
             <Box
               component="form"
