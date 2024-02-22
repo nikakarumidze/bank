@@ -30,7 +30,7 @@ class UserRepository:
         try:
             self.db.cursor.execute(
                 "INSERT INTO users (username, email, password_hash, balance) VALUES (?, ?, ?, ?)",
-                (User.username, User.email, User.password_hash, User.balance),
+                (User.username, User.email, User.password, User.balance),
             )
             self.db.conn.commit()
             return "User registered successfully", 200

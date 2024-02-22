@@ -37,7 +37,7 @@ class UserService:
             return "The email address is already in use", 400
 
         password_hash = hashlib.sha256(password.encode()).hexdigest()
-        return self.repo.register_user(User(username, password_hash, 5000, []))
+        return self.repo.register_user(User(username, password_hash, email, 5000, []))
 
     def __authenticate_user(self, username, password):
         """Authenticate user."""
