@@ -30,7 +30,7 @@ export default function LogIn() {
   const [formState, setFormState] = useState<formStateObject>(baseFormValidity);
   const [reqErr, setReqErr] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [userData, setUserData] = useState<UserDataType | []>([]);
+  const [userData, setUserData] = useState<UserDataType>();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -65,7 +65,7 @@ export default function LogIn() {
       setUserData(answer.data);
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setReqErr(err.response!.data.description!.error);
+        setReqErr(err.response!.data.description);
         setFormState({
           isUsernameValid: false,
           isPasswordValid: false,
@@ -78,7 +78,7 @@ export default function LogIn() {
 
   return (
     <>
-      {!userData.length ? (
+      {userData === undefined ? (
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
@@ -163,7 +163,7 @@ export default function LogIn() {
           </Box>
         </Container>
       ) : (
-        <UserData data={userData} />
+        <UserData {...userData} />
       )}
     </>
   );

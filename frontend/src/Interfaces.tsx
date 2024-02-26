@@ -1,1 +1,4 @@
-export type UserDataType = [string, string[] | number[]];
+export interface UserDataType {
+  balance: number;
+  transactions: Array<string | number>[];
+}

@@ -70,7 +70,7 @@ export default function SignUp() {
       console.log(answer.data);
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setReqErr(err.response!.data.description!.error);
+        setReqErr(err.response!.data.description);
         setFormState({
           isUsernameValid: false,
           isPasswordValid: false,
