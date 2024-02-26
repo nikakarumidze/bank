@@ -78,7 +78,7 @@ class UserRepository:
                 return None  # User not found
 
             transactions = self.db.cursor.execute(
-                "SELECT * FROM transactions WHERE sender_id = ? OR receiver_id = ?",
+                "SELECT t.transaction_id, u1.username AS sender, u2.username AS receiver, t.amount, t.date FROM transactions t INNER JOIN users u1 ON t.sender_id = u1.user_id INNER JOIN users u2 ON t.receiver_id = u2.user_id WHERE t.sender_id = ? OR t.receiver_id = ?",
                 (user_id[0], user_id[0]),
             ).fetchall()
             return transactions
